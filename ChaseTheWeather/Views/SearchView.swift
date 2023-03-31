@@ -11,6 +11,7 @@ struct SearchView: View {
     func runSearch() {
             Task {
                 await weatherViewModel.searchWeather(byCityName:searchString)
+                await weatherViewModel.searchForecast(byCityName: searchString)
                 showingSearch.toggle()
                 weatherViewModel.saveCity(name: searchString)
             }
@@ -26,9 +27,7 @@ struct SearchView: View {
                             searchString = city.name
                             runSearch()
                         }
-                        
                     }
-                    
                 }
                 Spacer()
             }

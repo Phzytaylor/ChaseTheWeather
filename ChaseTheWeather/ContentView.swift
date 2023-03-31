@@ -30,46 +30,40 @@ struct ContentView: View {
                 SunView(progress: weatherViewModel.timeOfDay)
                 StarsView().opacity(starOpacity)
                 WeatherConditionsView().environmentObject(weatherViewModel)
-                    
-                if let weatherData = weatherViewModel.weatherData, let forecastData = weatherViewModel.forecastData, let condition = weatherViewModel.weatherConditions, let weather = weatherData.weather.first {
-                        
-                    let residueViewStrength = condition.stormStrength(weather: weather)
-                        ScrollView {
-                            VStack {
-                                WeatherView(weatherData: weatherData)
-                                if condition == .snow {
-                                    ResidueView(type: .snow, strength: residueViewStrength)
-                                        .frame(height: 62)
-                                        .offset(y: 50)
-                                        .zIndex(1)
-                                } else if condition == .rain {
-                                    ResidueView(type: .rain , strength: residueViewStrength)
-                                        .frame(height: 62)
-                                        .offset(y: 50)
-                                        .zIndex(1)
-                                }
-                                
-                                ForecastView(forecastData: forecastData).frame(minHeight: 200)
-                            }
-                            
-                            Button(action: {
-                                showingSearch = true
-                            }) {
-                                Image(systemName: "magnifyingglass")
-                                    .font(.largeTitle)
-                                    .foregroundColor(.white)
-                                    .padding()
-                                    .background(Color.blue)
-                                    .cornerRadius(8)
-                            }
-
+                
+                
+                
+                let residueViewStrength = weatherViewModel.weatherConditions.stormStrength(weather: weatherViewModel.weatherData?.weather.first ?? .init(id: 0, main: "", description: "", icon: ""))
+                ScrollView {
+                    VStack {
+                        WeatherView(weatherData: weatherViewModel.weatherData)
+                        if weatherViewModel.weatherConditions == .snow {
+                            ResidueView(type: .snow, strength: residueViewStrength)
+                                .frame(height: 62)
+                                .offset(y: 50)
+                                .zIndex(1)
+                        } else if weatherViewModel.weatherConditions == .rain {
+                            ResidueView(type: .rain , strength: residueViewStrength)
+                                .frame(height: 62)
+                                .offset(y: 50)
+                                .zIndex(1)
                         }
                         
-                    } else {
-                        VStack {
-                            WeatherView(weatherData: nil)
-                        }
+                        ForecastView(forecastData: weatherViewModel.forecastData ?? .init(list: [])).frame(minHeight: 200)
                     }
+                    
+                    Button(action: {
+                        showingSearch = true
+                    }) {
+                        Image(systemName: "magnifyingglass")
+                            .font(.largeTitle)
+                            .foregroundColor(.white)
+                            .padding()
+                            .background(Color.blue)
+                            .cornerRadius(8)
+                    }
+                    
+                }
                 
             }.preferredColorScheme(.dark).frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(
